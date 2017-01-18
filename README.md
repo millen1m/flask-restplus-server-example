@@ -5,6 +5,19 @@
 [![Heroku](http://heroku-badge.herokuapp.com/?app=flask-restplus-example-server&root=api/v1/&style=flat&svg=1)](http://flask-restplus-example-server.herokuapp.com/api/v1/)
 
 
+Updates from Fork:
+=================
+
+* Added log in on server using flask_login, means that current_user can be used in authorization flow
+* Added a node.js client app, this can be used to request the authorization.
+* Added additional redirect data to initial database data. client all set up with default client_id and client_secret. Should work out of the box.
+
+Use the client app
+------------------
+
+go to client folder `cd client` then run `node.js`
+Click on "Login" then enter in the default creditials user="root" pw="q"
+
 RESTful API Server Example
 ==========================
 
