@@ -55,6 +55,8 @@ class ProductionConfig(BaseConfig):
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
+    OAUTHLIB_INSECURE_TRANSPORT = True
+    OAUTH2_PROVIDER_ERROR_URI = 'auth/oauth2/errors'
 
 
 class TestingConfig(BaseConfig):

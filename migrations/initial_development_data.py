@@ -54,7 +54,7 @@ def init_auth(docs_user):
         client_id='documentation',
         client_secret='KQ()SWK)SQK)QWSKQW(SKQ)S(QWSQW(SJ*HQ&HQW*SQ*^SSQWSGQSG',
         user_id=docs_user.id,
-        redirect_uris=[],
+        redirect_uris=['http://localhost:8888/callback'],
         default_scopes=api.api_v1.authorizations['oauth2_password']['scopes']
     )
     db.session.add(oauth2_client)

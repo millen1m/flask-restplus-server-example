@@ -136,3 +136,6 @@ class User(db.Model, Timestamp):
         if user.password == password:
             return user
         return None
+
+    def get_id(self):
+        return self.id
