@@ -9,6 +9,7 @@ from app.extensions import db, api
 
 from app.modules.users.models import User
 from app.modules.auth.models import OAuth2Client
+from datetime import datetime, timedelta
 
 
 def init_users():
@@ -18,14 +19,16 @@ def init_users():
         password='q',
         is_active=True,
         is_regular_user=True,
-        is_admin=True
+        is_admin=True,
+        subscription=datetime.now() + timedelta(days=70)
     )
     db.session.add(root_user)
     docs_user = User(
         username='documentation',
         email='documentation@localhost',
         password='w',
-        is_active=False
+        is_active=False,
+        subscription=datetime.now() + timedelta(days=70)
     )
     db.session.add(docs_user)
     regular_user = User(
@@ -33,7 +36,8 @@ def init_users():
         email='user@localhost',
         password='w',
         is_active=True,
-        is_regular_user=True
+        is_regular_user=True,
+        subscription=datetime.now() + timedelta(days=-4)
     )
     db.session.add(regular_user)
     internal_user = User(
@@ -41,7 +45,8 @@ def init_users():
         email='internal@localhost',
         password='q',
         is_active=True,
-        is_internal=True
+        is_internal=True,
+        subscription=datetime.now() + timedelta(days=70)
     )
     db.session.add(internal_user)
     db.session.commit()

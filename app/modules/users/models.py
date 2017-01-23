@@ -9,6 +9,8 @@ from sqlalchemy_utils import types as column_types, Timestamp
 
 from app.extensions import db
 
+from datetime import datetime
+
 
 def _get_is_static_role_property(role_name, static_role):
     """
@@ -57,6 +59,7 @@ class User(db.Model, Timestamp):
     first_name = db.Column(db.String(length=30), default='', nullable=False)
     middle_name = db.Column(db.String(length=30), default='', nullable=False)
     last_name = db.Column(db.String(length=30), default='', nullable=False)
+    subscription = db.Column(db.DateTime, default='', nullable=False)
 
     class StaticRoles(enum.Enum):
         INTERNAL = (0x8000, "Internal")
