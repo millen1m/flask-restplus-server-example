@@ -184,10 +184,6 @@ def charge():
     #     currency='usd',
     #     description='Flask Charge'
     # )
-    stripe.Subscription.create(
-        customer=customer.id,
-        plan="test-nz",
-    )
 
     # TODO: Add the customer id to the user model
     user = User.query.filter_by(username='root').first()
