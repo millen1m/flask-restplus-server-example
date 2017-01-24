@@ -191,11 +191,11 @@ def charge():
 
     # TODO: Add the customer id to the user model
     user = User.query.filter_by(username='root').first()
-
-    user.subscription += timedelta(days=30)
+    user.customer_id = customer.id
+    # user.subscription += timedelta(days=30)
     db.session.commit()
 
-    return render_template('charge.html', amount=amount)
+    return render_template('charge.html', dollars=request.form['dollars'])
 
 @auth_blueprint.route('/pay', methods=['GET'])
 @flask_login.login_required
@@ -210,11 +210,15 @@ def subscription():
     from flask import Response
     import json
     data = json.loads(request.data.decode('utf8'))
-    for item in data:
-        print(item, data[item])
 
-    if data['type'] == "charge.succeeded":
+    if data['type'] == "invoice.payment_succeeded":
         print("Charge is good")
+
+        customer_id = data['data']['object']['customer']
+        plan_type = data['data']['object']['lines']['data'][0]['plan']['id']
+        user = User.query.filter_by(customer_id=customer_id).first()
+        if user is not None:
+            user.subscription += timedelta(months=1)
 
     resp = Response("")
     resp.headers['Access-Control-Allow-Origin'] = '*'

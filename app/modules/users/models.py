@@ -60,6 +60,7 @@ class User(db.Model, Timestamp):
     middle_name = db.Column(db.String(length=30), default='', nullable=False)
     last_name = db.Column(db.String(length=30), default='', nullable=False)
     subscription = db.Column(db.DateTime, default='', nullable=False)
+    customer_id = db.Column(db.String(length=120), default=None, nullable=True)
 
     class StaticRoles(enum.Enum):
         INTERNAL = (0x8000, "Internal")
