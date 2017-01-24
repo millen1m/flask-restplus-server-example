@@ -20,7 +20,7 @@ def init_users():
         is_active=True,
         is_regular_user=True,
         is_admin=True,
-        subscription=datetime.now() + timedelta(days=70)
+        subscription=datetime.now() + timedelta(days=7)
     )
     db.session.add(root_user)
     docs_user = User(
@@ -28,7 +28,7 @@ def init_users():
         email='documentation@localhost',
         password='w',
         is_active=False,
-        subscription=datetime.now() + timedelta(days=70)
+        subscription=datetime.now() + timedelta(days=29)
     )
     db.session.add(docs_user)
     regular_user = User(
@@ -46,7 +46,7 @@ def init_users():
         password='q',
         is_active=True,
         is_internal=True,
-        subscription=datetime.now() + timedelta(days=70)
+        subscription=datetime.now() + timedelta(days=10)
     )
     db.session.add(internal_user)
     db.session.commit()

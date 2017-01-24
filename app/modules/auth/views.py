@@ -9,7 +9,7 @@ More details are available here:
 * http://flask-oauthlib.readthedocs.org/en/latest/oauth2.html
 * http://lepture.com/en/2013/create-oauth-server
 """
-
+import os
 from flask import Blueprint, request, render_template, jsonify, session, redirect
 from flask_login import current_user
 import flask_login
@@ -20,10 +20,19 @@ from werkzeug import security
 from app.extensions import db, api, oauth2, login_manager
 
 from app.modules.users.models import User
+from datetime import datetime, timedelta
 
 from . import parameters
 from .models import OAuth2Client
 import logging
+import stripe
+
+stripe_keys = {
+    'secret_key': os.environ['SECRET_KEY'],  # need to set them inside terminal `$export SECRET_KEY=XXXXXXXXXXX`
+    'publishable_key': os.environ['PUBLISHABLE_KEY']  # obtain you keys at https://dashboard.stripe.com/account/apikeys
+}
+
+stripe.api_key = stripe_keys['secret_key']
 
 log = logging.getLogger('flask_oauthlib')
 
@@ -32,13 +41,6 @@ login_manager.login_view = "auth.login"
 
 auth_blueprint = Blueprint('auth', __name__, url_prefix='/auth')  # pylint: disable=invalid-name
 
-
-def get_current_user():
-    if 'id' in session:
-        uid = session['id']
-        return User.query.get(uid)
-    else:
-        return User.query.get(1)
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login(*args, **kwargs):
@@ -53,7 +55,7 @@ def login(*args, **kwargs):
                '''
 
     email = request.form['email']
-    user = User.query.get(email)
+    user = User.query.filter_by(username=email).first()
     if request.form['pw']:
         user = User.find_with_password(request.form['email'], request.form['pw'])
         flask_login.login_user(user)
@@ -162,3 +164,39 @@ def authorize(*args, **kwargs):
 
     confirm = request.form.get('confirm', 'no')
     return confirm == 'yes'
+
+
+@auth_blueprint.route('/charge', methods=['POST'])
+@flask_login.login_required
+def charge():
+    # print('req: ', request.form)
+
+    amount = int(request.form['dollars']) * 100
+
+    customer = stripe.Customer.create(
+        email=request.form['stripeEmail'],  # note: the stripeEmail can be different to the user email
+        card=request.form['stripeToken']
+    )
+
+    charge = stripe.Charge.create(
+        customer=customer.id,
+        amount=amount,
+        currency='usd',
+        description='Flask Charge'
+    )
+
+    # TODO: Add the customer id to the user model
+    user = User.query.filter_by(username='root').first()
+
+
+    user.subscription += timedelta(days=30)
+    db.session.commit()
+
+    return render_template('charge.html', amount=amount)
+
+@auth_blueprint.route('/pay', methods=['GET'])
+@flask_login.login_required
+def pay():
+    amount = 2000
+    dollars = int(amount / 100)  # Note if decimal then support for floats in needed
+    return render_template('pay.html', key=stripe_keys['publishable_key'], dollars=dollars, username=current_user.username)

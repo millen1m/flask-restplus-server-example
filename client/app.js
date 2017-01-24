@@ -48,6 +48,12 @@ app.get('/logout', function(req, res) {
   res.redirect('http://localhost:5000/auth/logout')
 });
 
+app.get('/pay', function(req, res) {
+  console.log("Pay button pressed");
+
+  res.redirect('http://localhost:5000/auth/pay')
+});
+
 app.get('/direct', function(req, res) {
   var authOptions = {
       url: 'http://127.0.0.1:5000/auth/oauth2/token?username=root&password=q',  // collect bearer token

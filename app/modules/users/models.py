@@ -92,6 +92,7 @@ class User(db.Model, Timestamp):
             "is_admin={self.is_admin}, "
             "is_regular_user={self.is_regular_user}, "
             "is_active={self.is_active}, "
+            "subscription={self.subscription}, "
             ")>".format(
                 class_name=self.__class__.__name__,
                 self=self

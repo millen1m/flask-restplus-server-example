@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+  <form action="/auth/charge" method="post">
+  <label>User</label>
+  <input type="text" name="username" value="{{ username }}" readonly>
+  <label>Amount</label>
+  <input type="text" name="display_amount" value="${{ dollars }}" readonly>
+    <input type="hidden" name="dollars" value={{ dollars }}>
+
+    <script src="https://checkout.stripe.com/v2/checkout.js" class="stripe-button" data-key="{{ key }}"></script>
+  </form>
+  Wrong account, please <a href="/auth/oauth2/logout">log out </a> and try again.
+{% endblock %}
