@@ -178,16 +178,19 @@ def charge():
         card=request.form['stripeToken']
     )
 
-    charge = stripe.Charge.create(
+    # charge = stripe.Charge.create(
+    #     customer=customer.id,
+    #     amount=amount,
+    #     currency='usd',
+    #     description='Flask Charge'
+    # )
+    stripe.Subscription.create(
         customer=customer.id,
-        amount=amount,
-        currency='usd',
-        description='Flask Charge'
+        plan="test-nz",
     )
 
     # TODO: Add the customer id to the user model
     user = User.query.filter_by(username='root').first()
-
 
     user.subscription += timedelta(days=30)
     db.session.commit()
@@ -199,4 +202,20 @@ def charge():
 def pay():
     amount = 2000
     dollars = int(amount / 100)  # Note if decimal then support for floats in needed
+
     return render_template('pay.html', key=stripe_keys['publishable_key'], dollars=dollars, username=current_user.username)
+
+@auth_blueprint.route('/subscription-successful', methods=['POST'])
+def subscription():
+    from flask import Response
+    import json
+    data = json.loads(request.data.decode('utf8'))
+    for item in data:
+        print(item, data[item])
+
+    if data['type'] == "charge.succeeded":
+        print("Charge is good")
+
+    resp = Response("")
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp

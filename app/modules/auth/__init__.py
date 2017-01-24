@@ -38,3 +38,4 @@ def init_app(app, **kwargs):
     # Mount authentication routes
     app.register_blueprint(views.auth_blueprint)
     api_v1.add_namespace(resources.api)
+
